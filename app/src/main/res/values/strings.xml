@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DasWetter</string>
+    <string name="weatherapi_key">get your own key, it's free</string>
+</resources>
