@@ -12,6 +12,6 @@ public interface ApiService {
         Call<WeatherResponse> getCurrentWeather(@Query("key") String apiKey, @Query("q") String location);
 
         @Headers({"Accept: accplication/json"})
-        @GET("/v1/forecast.json?aqi=yes")
+        @GET("/v1/forecast.json?aqi=yes&days=7")
         Call<ForecastResponse> getForecast(@Query("key") String apiKey, @Query("q") String location);
 }
