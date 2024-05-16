@@ -10,10 +10,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.daswetter.api.ForecastResponse;
+import com.example.daswetter.api.RestfulHandler;
+import com.example.daswetter.models.Forecast;
+import com.example.daswetter.models.ForecastDay;
+import com.example.daswetter.utils.DateConverter;
+import com.example.daswetter.utils.Temperatures;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView currentTempView, todaysHighView, todaysLowView;
     private TextView coverageView, currentFeelsLikeView, airQualityView;
-    private RelativeLayout day1, day2, day3, day4, day5, day6;
+    private RelativeLayout[] dailyForecasts, day1, day2, day3, day4, day5, day6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +52,16 @@ public class MainActivity extends AppCompatActivity {
         currentFeelsLikeView = findViewById(R.id.feelsLike);
         airQualityView = findViewById(R.id.airQuality);
 
-        day1 = findViewById(R.id.day1);
-        TextView d1 = day1.findViewById(R.id.dayLabel);
-        Log.d("DAY1", d1.getText().toString());
-        day2 = findViewById(R.id.day2);
-        day3 = findViewById(R.id.day3);
-        day4 = findViewById(R.id.day4);
-        day5 = findViewById(R.id.day5);
-        day6 = findViewById(R.id.day6);
+        dailyForecasts = new RelativeLayout[] {
+                findViewById(R.id.day1),
+                findViewById(R.id.day2),
+                findViewById(R.id.day3),
+                findViewById(R.id.day4),
+                findViewById(R.id.day5),
+                findViewById(R.id.day6)
+        };
+        //TextView d1 = day1.findViewById(R.id.dayLabel);
+        //Log.d("DAY1", d1.getText().toString());
 
         location = preferences.getString("location", "Canada");
 
@@ -108,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                     Temperatures.Unit unit = Temperatures.Unit.valueOf(preferences.getString("temp_unit", "FAHRENHEIT"));
 
                     setCurrentWeather(forecastResponse, unit);
+                    setDailyForcast(forecastResponse.getForecast(), unit);
 
                     Log.i("Forecast", forecastResponse.getForecast().getDailyForecast().size() + " days");
                 }
@@ -133,5 +143,27 @@ public class MainActivity extends AppCompatActivity {
         coverageView.setText(forecastResponse.getCurrent().getCondition().getText());
         currentFeelsLikeView.setText("RealFeel: " + Temperatures.formatTemperature(feelsLike));
         airQualityView.setText("Air Quality: " + forecastResponse.getCurrent().getAirQuality());
+    }
+
+    private void setDailyForcast(Forecast forecast, Temperatures.Unit unit) {
+        Log.d("FORECAST", Integer.toString(forecast.getDailyForecast().size()));
+
+        // retrieved 7-day forecast
+        // 0 - today
+        // dailyForecast[0] <=> forecast.get(1)
+        for(int day = 1; day < 7; ++day) {
+            RelativeLayout view = dailyForecasts[day - 1];
+            ForecastDay dailyWeather = forecast.getDailyForecast().get(day);
+
+            TextView dayOfWeek = view.findViewById(R.id.dayLabel);
+            ImageView weather = view.findViewById(R.id.dayIcon);
+            TextView dailyHigh = view.findViewById(R.id.dayHigh);
+            TextView dailyLow = view.findViewById(R.id.dayLow);
+
+            dayOfWeek.setText(DateConverter.dateToDay(dailyWeather.getDate()));
+            
+            dailyHigh.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMaxTemp(unit)));
+            dailyLow.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMinTemp(unit)));
+        }
     }
 }
