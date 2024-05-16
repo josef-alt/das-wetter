@@ -6,6 +6,7 @@ public class Day {
     private double maxtemp_c, maxtemp_f;
     private double mintemp_c, mintemp_f;
     private double avgtemp_c, avgtemp_f;
+    private Condition condition;
 
     public double getMinTemp(Temperatures.Unit unit) {
         if(unit == Temperatures.Unit.CELSIUS) {
@@ -23,4 +24,7 @@ public class Day {
         }
     }
 
+    public Condition getCondition() {
+        return condition;
+    }
 }

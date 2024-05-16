@@ -8,4 +8,8 @@ public class Condition {
     public String getText() {
         return text;
     }
+
+    public String getIcon() {
+        return icon;
+    }
 }
