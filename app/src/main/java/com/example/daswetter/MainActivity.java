@@ -2,6 +2,8 @@ package com.example.daswetter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,8 +21,13 @@ import com.example.daswetter.api.ForecastResponse;
 import com.example.daswetter.api.RestfulHandler;
 import com.example.daswetter.models.Forecast;
 import com.example.daswetter.models.ForecastDay;
+import com.example.daswetter.models.Hour;
 import com.example.daswetter.utils.DateConverter;
 import com.example.daswetter.utils.Temperatures;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,6 +35,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private SharedPreferences preferences;
+    private Temperatures.Unit temperatureUnit;
     private String location;
     private Handler weatherHandler;
     private Runnable weatherRunnable;
@@ -37,12 +45,16 @@ public class MainActivity extends AppCompatActivity {
     private TextView coverageView, currentFeelsLikeView, airQualityView;
     private RelativeLayout[] dailyForecasts;
 
+    private RecyclerView hourlyForecastRecycler;
+    private HourlyRVA hourlyForecastAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         preferences = getPreferences(MODE_PRIVATE);
+        temperatureUnit = Temperatures.Unit.valueOf(preferences.getString("temp_unit", "FAHRENHEIT"));
 
         currentTempView = findViewById(R.id.currentTemp);
         todaysHighView = findViewById(R.id.currentHigh);
@@ -61,7 +73,12 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.day6)
         };
 
-        location = preferences.getString("location", "Canada");
+        hourlyForecastAdapter = new HourlyRVA(this, temperatureUnit);
+        hourlyForecastRecycler = findViewById(R.id.hourlyForecast);
+        hourlyForecastRecycler.setAdapter(hourlyForecastAdapter);
+        hourlyForecastRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        location = "Rochester, NY";//preferences.getString("location", "Canada");
 
         weatherHandler = new Handler();
         Log.d("loc", location);
@@ -112,10 +129,10 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<ForecastResponse> call, Response<ForecastResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ForecastResponse forecastResponse = response.body();
-                    Temperatures.Unit unit = Temperatures.Unit.valueOf(preferences.getString("temp_unit", "FAHRENHEIT"));
 
-                    setCurrentWeather(forecastResponse, unit);
-                    setDailyForcast(forecastResponse.getForecast(), unit);
+                    setCurrentWeather(forecastResponse);
+                    setDailyForcast(forecastResponse.getForecast());
+                    setHourlyForecast(forecastResponse.getForecast());
 
                     Log.i("Forecast", forecastResponse.getForecast().getDailyForecast().size() + " days");
                 }
@@ -128,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setCurrentWeather(ForecastResponse forecastResponse, Temperatures.Unit unit) {
-        double currentTemp = forecastResponse.getCurrent().getTemp(unit);
-        double feelsLike = forecastResponse.getCurrent().getFeelsLike(unit);
-        double high = forecastResponse.getForecast().getTodaysForecast().getDay().getMaxTemp(unit);
-        double low = forecastResponse.getForecast().getTodaysForecast().getDay().getMinTemp(unit);
+    private void setCurrentWeather(ForecastResponse forecastResponse) {
+        double currentTemp = forecastResponse.getCurrent().getTemp(temperatureUnit);
+        double feelsLike = forecastResponse.getCurrent().getFeelsLike(temperatureUnit);
+        double high = forecastResponse.getForecast().getTodaysForecast().getDay().getMaxTemp(temperatureUnit);
+        double low = forecastResponse.getForecast().getTodaysForecast().getDay().getMinTemp(temperatureUnit);
 
         currentTempView.setText(Temperatures.formatTemperature(currentTemp));
         todaysHighView.setText(Temperatures.formatTemperature(high));
@@ -143,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         airQualityView.setText("Air Quality: " + forecastResponse.getCurrent().getAirQuality());
     }
 
-    private void setDailyForcast(Forecast forecast, Temperatures.Unit unit) {
+    private void setDailyForcast(Forecast forecast) {
         Log.d("FORECAST", Integer.toString(forecast.getDailyForecast().size()));
 
         // retrieved 7-day forecast
@@ -169,8 +186,27 @@ public class MainActivity extends AppCompatActivity {
             int resourceID = getResources().getIdentifier(resource, "drawable", getPackageName());
             dayWeather.setImageResource(resourceID);
 
-            dayHigh.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMaxTemp(unit)));
-            dayLow.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMinTemp(unit)));
+            dayHigh.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMaxTemp(temperatureUnit)));
+            dayLow.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMinTemp(temperatureUnit)));
         }
+    }
+
+    private void setHourlyForecast(Forecast forecastResponse) {
+        int currentHour = LocalDateTime.now().getHour() + 1;
+        List<Hour> hourList = new ArrayList<>(24);
+
+        ForecastDay day = forecastResponse.getTodaysForecast();
+        for(int h = 1; h <= 24; ++h) {
+            Log.d("HOURLY", day.getHourly().get(currentHour).getTime() + "");
+            hourList.add(day.getHourly().get(currentHour));
+            currentHour += 1;
+
+            if(currentHour > 23) {
+                day = forecastResponse.getDailyForecast().get(1);
+                currentHour = 0;
+            }
+        }
+
+        hourlyForecastAdapter.setElements(hourList);
     }
 }
