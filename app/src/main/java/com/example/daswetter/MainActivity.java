@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView currentTempView, todaysHighView, todaysLowView;
     private TextView coverageView, currentFeelsLikeView, airQualityView;
-    private RelativeLayout[] dailyForecasts, day1, day2, day3, day4, day5, day6;
+    private RelativeLayout[] dailyForecasts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.day5),
                 findViewById(R.id.day6)
         };
-        //TextView d1 = day1.findViewById(R.id.dayLabel);
-        //Log.d("DAY1", d1.getText().toString());
 
         location = preferences.getString("location", "Canada");
 
@@ -156,14 +154,23 @@ public class MainActivity extends AppCompatActivity {
             ForecastDay dailyWeather = forecast.getDailyForecast().get(day);
 
             TextView dayOfWeek = view.findViewById(R.id.dayLabel);
-            ImageView weather = view.findViewById(R.id.dayIcon);
-            TextView dailyHigh = view.findViewById(R.id.dayHigh);
-            TextView dailyLow = view.findViewById(R.id.dayLow);
+            ImageView dayWeather = view.findViewById(R.id.dayIcon);
+            TextView dayHigh = view.findViewById(R.id.dayHigh);
+            TextView dayLow = view.findViewById(R.id.dayLow);
 
             dayOfWeek.setText(DateConverter.dateToDay(dailyWeather.getDate()));
-            
-            dailyHigh.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMaxTemp(unit)));
-            dailyLow.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMinTemp(unit)));
+
+            // instead of pulling every weather icon from the web I decided to include them in res
+            String iconPath = dailyWeather.getDay().getCondition().getIcon();
+            int index = iconPath.indexOf("64x64") + 6;
+            String resource = iconPath.substring(index)
+                    .replace("/", "")
+                    .replace(".png", "");
+            int resourceID = getResources().getIdentifier(resource, "drawable", getPackageName());
+            dayWeather.setImageResource(resourceID);
+
+            dayHigh.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMaxTemp(unit)));
+            dayLow.setText(Temperatures.formatTemperature(dailyWeather.getDay().getMinTemp(unit)));
         }
     }
 }
