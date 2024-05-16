@@ -8,4 +8,8 @@ public class ForecastDay {
     public Day getDay() {
         return day;
     }
+
+    public String getDate() {
+        return date;
+    }
 }

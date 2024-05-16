@@ -1,6 +1,6 @@
 package com.example.daswetter.models;
 
-import com.example.daswetter.Temperatures;
+import com.example.daswetter.utils.Temperatures;
 
 public class Current {
     private double temp_c, temp_f;

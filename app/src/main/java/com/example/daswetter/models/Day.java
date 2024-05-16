@@ -1,6 +1,6 @@
 package com.example.daswetter.models;
 
-import com.example.daswetter.Temperatures;
+import com.example.daswetter.utils.Temperatures;
 
 public class Day {
     private double maxtemp_c, maxtemp_f;

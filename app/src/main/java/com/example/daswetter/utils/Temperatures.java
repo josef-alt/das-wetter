@@ -1,4 +1,4 @@
-package com.example.daswetter;
+package com.example.daswetter.utils;
 
 public class Temperatures {
     public enum Unit {

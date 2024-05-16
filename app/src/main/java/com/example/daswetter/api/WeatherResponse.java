@@ -1,4 +1,4 @@
-package com.example.daswetter;
+package com.example.daswetter.api;
 
 import com.example.daswetter.models.Current;
 

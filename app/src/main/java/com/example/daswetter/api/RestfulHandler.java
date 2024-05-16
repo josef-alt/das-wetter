@@ -1,11 +1,6 @@
-package com.example.daswetter;
-
-import java.io.IOException;
-import java.util.Optional;
+package com.example.daswetter.api;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
