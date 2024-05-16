@@ -4,39 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/blue">
+    android:background="@color/blue"
+    tools:context=".MainActivity">
 
     <RelativeLayout
         android:id="@+id/currentTemperatures"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
+
         <TextView
             android:id="@+id/currentTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="50pt"
-            android:text="75°"/>
+            android:text="75°"
+            android:textSize="50pt" />
+
         <RelativeLayout
             android:id="@+id/currentTempRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/currentTemp"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/currentTemp">
+
             <TextView
                 android:id="@+id/currentHigh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20pt"
-                android:text="100°"/>
+                android:text="100°"
+                android:textSize="20pt" />
+
             <TextView
                 android:id="@+id/currentLow"
-                android:layout_below="@id/currentHigh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20pt"
-                android:text="50°"/>
+                android:layout_below="@id/currentHigh"
+                android:text="50°"
+                android:textSize="20pt" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -47,31 +51,85 @@
         android:layout_below="@id/currentTemperatures"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp">
+
         <TextView
             android:id="@+id/cloudCoverage"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mostly Cloudy"/>
+            android:layout_centerHorizontal="true"
+            android:text="Mostly Cloudy" />
+
         <TextView
             android:id="@+id/feelsLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/cloudCoverage"
             android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RealFeel: 94"/>
+            android:text="RealFeel: 94" />
+
         <TextView
             android:id="@+id/airQuality"
-            android:layout_below="@id/feelsLike"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Air Quality: Fair(47)"/>
+            android:layout_below="@id/feelsLike"
+            android:layout_centerHorizontal="true"
+            android:text="Air Quality: Fair(47)" />
     </RelativeLayout>
 
-    <include layout="@layout/trademark"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        android:layout_below="@id/currentDescription"
+        android:orientation="horizontal">
+
+        <include
+            android:id="@+id/day1"
+            layout="@layout/daily_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/day2"
+            layout="@layout/daily_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/day3"
+            layout="@layout/daily_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/day4"
+            layout="@layout/daily_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/day5"
+            layout="@layout/daily_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/day6"
+            layout="@layout/daily_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/trademark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/dayLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="MON" />
+
+    <ImageView
+        android:id="@+id/dayIcon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dayLabel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="0dp"
+        android:src="@drawable/cloudicon" />
+
+    <TextView
+        android:id="@+id/dayHigh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dayIcon"
+        android:layout_centerHorizontal="true"
+        android:text="100" />
+
+    <TextView
+        android:id="@+id/dayLow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dayHigh"
+        android:layout_centerHorizontal="true"
+        android:text="10" />
+</RelativeLayout>
