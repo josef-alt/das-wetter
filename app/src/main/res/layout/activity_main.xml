@@ -81,7 +81,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/currentDescription"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp">
 
         <include
             android:id="@+id/day1"
