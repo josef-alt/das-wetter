@@ -78,7 +78,14 @@ public class MainActivity extends AppCompatActivity {
         hourlyForecastRecycler.setAdapter(hourlyForecastAdapter);
         hourlyForecastRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        location = "Rochester, NY";//preferences.getString("location", "Canada");
+        configureLocation();
+    }
+
+    /**
+     * Loads the current location and sets up the weather handler/display updating
+     */
+    private void configureLocation() {
+        location = preferences.getString("location", "Rochester, NY");
 
         weatherHandler = new Handler();
         Log.d("loc", location);
