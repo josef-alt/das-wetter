@@ -1,10 +1,15 @@
 package com.example.daswetter;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -100,10 +105,50 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Used to retrieve changes from the Settings page
+     */
+    private ActivityResultLauncher<Intent> settingsLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult o) {
+                    if(o.getResultCode() == Settings.RESULT_OK) {
+                        Intent data = o.getData();
+                        String newLocation = data.getExtras().get("location").toString();
+                        String newUnit = data.getExtras().get("unit").toString();
+
+                        // ensure new data is valid
+                        if(null != newLocation && null != newUnit) {
+                            if(!newLocation.isEmpty() && !newUnit.isEmpty()) {
+                                temperatureUnit = Temperatures.Unit.valueOf(newUnit);
+                                location = newLocation;
+
+                                // save to preferences
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putString("location", location);
+                                editor.putString("temp_unit", temperatureUnit.toString());
+                                editor.commit();
+
+                                // update ui
+                                configureLocation();
+                            }
+                        }
+                    }
+                }
+            }
+    );
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.settings) {
             Toast.makeText(this, "Opened Settings Menu", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, Settings.class);
+            intent.putExtra("location", location);
+            intent.putExtra("unit", temperatureUnit.toString());
+            settingsLauncher.launch(intent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);
