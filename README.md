@@ -5,12 +5,10 @@ A simple Android app for accessing the current weather and the forecast for the 
 This app is powered by [WeatherAPI.com](https://www.weatherapi.com/).
 
 # My To Do List
-1. changing locations
-2. swipe between multiple locations
-3. sticky header and footer
-4. why is the header bright white when i specifically made it blue in the themes xml files
-5. hourly forecast
-6. convert PAQI from step function to linear
+1. swipe between multiple locations
+2. sticky header and footer
+3. why is the header bright white when i specifically made it blue in the themes xml files
+4. convert PAQI from step function to linear
 
 # Building
 If you intent to build this app yourself, there are a few things you will need.
