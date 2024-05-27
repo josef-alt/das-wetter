@@ -192,19 +192,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setHourlyForecast(Forecast forecastResponse) {
-        int currentHour = LocalDateTime.now().getHour() + 1;
+        int currentHour = LocalDateTime.now().getHour();
         List<Hour> hourList = new ArrayList<>(24);
 
         ForecastDay day = forecastResponse.getTodaysForecast();
         for(int h = 1; h <= 24; ++h) {
-            Log.d("HOURLY", day.getHourly().get(currentHour).getTime() + "");
-            hourList.add(day.getHourly().get(currentHour));
             currentHour += 1;
-
             if(currentHour > 23) {
                 day = forecastResponse.getDailyForecast().get(1);
                 currentHour = 0;
             }
+
+            Log.d("HOURLY", day.getHourly().get(currentHour).getTime() + "");
+            hourList.add(day.getHourly().get(currentHour));
         }
 
         hourlyForecastAdapter.setElements(hourList);
