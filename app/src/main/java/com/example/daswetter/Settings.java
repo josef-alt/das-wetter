@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.daswetter.api.ForecastResponse;
 import com.example.daswetter.api.RestfulHandler;
 import com.example.daswetter.api.WeatherResponse;
+import com.example.daswetter.models.Location;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,8 +81,12 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    Location found = response.body().getLocation();
+                    String newLocation = found.getName() + ", " + found.getRegion();
+                    Toast.makeText(Settings.this, "Setting location to: " + newLocation, Toast.LENGTH_LONG).show();
+
                     Intent resultIntent = new Intent();
-                    resultIntent.putExtra("location", location);
+                    resultIntent.putExtra("location", newLocation);
                     resultIntent.putExtra("unit", unit);
                     setResult(Settings.RESULT_OK, resultIntent);
                     finish();
