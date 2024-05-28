@@ -1,13 +1,28 @@
 package com.example.daswetter;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.Toast;
+
+import com.example.daswetter.api.ForecastResponse;
+import com.example.daswetter.api.RestfulHandler;
+import com.example.daswetter.api.WeatherResponse;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Settings extends AppCompatActivity {
 
@@ -49,11 +64,33 @@ public class Settings extends AppCompatActivity {
             String newUnit = fahrenheit.isChecked() ? "FAHRENHEIT" : "CELSIUS";
 
             if(!newLocation.isEmpty()) {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("location", newLocation);
-                resultIntent.putExtra("unit", newUnit);
-                setResult(Settings.RESULT_OK, resultIntent);
-                finish();
+                validateAndExit(newLocation, newUnit);
+            }
+        });
+    }
+
+    /**
+     *  Sends a dummy api call to determine whether the new location is valid or not
+     */
+    private void validateAndExit(String location, String unit) {
+        RestfulHandler r = new RestfulHandler();
+        Call<WeatherResponse> call = r.getCurrentWeather(getString(R.string.weatherapi_key), location);
+
+        call.enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("location", location);
+                    resultIntent.putExtra("unit", unit);
+                    setResult(Settings.RESULT_OK, resultIntent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                Toast.makeText(Settings.this, "invalid location", Toast.LENGTH_SHORT).show();
             }
         });
     }
