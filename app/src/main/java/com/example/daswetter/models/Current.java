@@ -3,7 +3,6 @@ package com.example.daswetter.models;
 import com.example.daswetter.utils.Temperatures;
 
 public class Current {
-    private Location location;
     private double temp_c, temp_f;
 
     private double feelslike_c, feelslike_f;
@@ -28,10 +27,6 @@ public class Current {
     private double vis_km, vis_miles;
     private double uv;
     private double gust_mph, gust_kph;
-
-    public Location getLocation() {
-        return location;
-    }
 
     public double getTemp(Temperatures.Unit unit) {
         if(unit == Temperatures.Unit.CELSIUS) {
