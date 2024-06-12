@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -214,12 +215,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDailyForcast(Forecast forecast) {
         Log.d("FORECAST", Integer.toString(forecast.getDailyForecast().size()));
+        int numDays = Math.min(forecast.getDailyForecast().size(), 7);
 
         // retrieved 7-day forecast
         // 0 - today
         // dailyForecast[0] <=> forecast.get(1)
         for(int day = 1; day < 7; ++day) {
             RelativeLayout view = dailyForecasts[day - 1];
+
+            // depending on the api plan, the forecast may be 7 days or only 3
+            // if it's 3, we need to hide the remaining day displays and fill space
+            if(day >= numDays) {
+                view.setVisibility(View.GONE);
+                continue;
+            }
+
             ForecastDay dailyWeather = forecast.getDailyForecast().get(day);
 
             TextView dayOfWeek = view.findViewById(R.id.dayLabel);
