@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                     ForecastResponse forecastResponse = response.body();
 
                     setCurrentWeather(forecastResponse);
-                    setDailyForcast(forecastResponse.getForecast());
+                    setDailyForecast(forecastResponse.getForecast());
                     setHourlyForecast(forecastResponse.getForecast());
 
                     Log.i("Forecast", forecastResponse.getForecast().getDailyForecast().size() + " days");
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         airQualityView.setText("Air Quality: " + forecastResponse.getCurrent().getAirQuality());
     }
 
-    private void setDailyForcast(Forecast forecast) {
+    private void setDailyForecast(Forecast forecast) {
         Log.d("FORECAST", Integer.toString(forecast.getDailyForecast().size()));
         int numDays = Math.min(forecast.getDailyForecast().size(), 7);
 
