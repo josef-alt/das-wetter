@@ -31,6 +31,11 @@ public class HourlyRVA extends RecyclerView.Adapter<HourlyRVA.ViewHolder> {
         this.unit = unit;
     }
 
+    public void setUnit(Temperatures.Unit unit) {
+        this.unit = unit;
+        notifyDataSetChanged();
+    }
+
     public void setElements(List<Hour> elements) {
         this.elements = new ArrayList<>(elements);
         notifyDataSetChanged();

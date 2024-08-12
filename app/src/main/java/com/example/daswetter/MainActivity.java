@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 // update ui
                                 configureLocation();
+                                hourlyForecastAdapter.setUnit(temperatureUnit);
                             }
                         }
                     }
